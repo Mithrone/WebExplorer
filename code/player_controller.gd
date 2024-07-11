@@ -1,3 +1,4 @@
+#Controlls all player actions
 extends AnimatableBody2D
 
 var input_delay = 200.0
@@ -33,6 +34,7 @@ func _process(_delta):
 		
 	pass
 
+#Corrects the position to the nearest step. Currently it is every 200th pixel sideways and vertically
 func correct_position():
 	if (abs(fmod(position.x, step_size)) > (step_size / 2)):
 		position.x = position.x - (abs(fmod(position.x, step_size)) - step_size)
