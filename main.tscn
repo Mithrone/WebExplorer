@@ -1,16 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://drnpp3i0ol5nx"]
+[gd_scene load_steps=7 format=3 uid="uid://drnpp3i0ol5nx"]
 
 [ext_resource type="SpriteFrames" uid="uid://dtqnegnqnvm5f" path="res://animations/playerAnimation.tres" id="1_d735t"]
+[ext_resource type="Script" path="res://code/player_controller.gd" id="1_nki1m"]
+[ext_resource type="Texture2D" uid="uid://fsvdkwhsj1bf" path="res://sprites/Cube.png" id="3_5jbjp"]
+[ext_resource type="Script" path="res://code/test.gd" id="4_fxfjc"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ukopr"]
-radius = 88.0511
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_we5hr"]
+size = Vector2(190, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_otbnq"]
+size = Vector2(180, 180)
 
 [node name="Node2D" type="Node2D"]
 
-[node name="Player" type="StaticBody2D" parent="."]
+[node name="Player" type="AnimatableBody2D" parent="."]
+sync_to_physics = false
+script = ExtResource("1_nki1m")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-shape = SubResource("CircleShape2D_ukopr")
+shape = SubResource("RectangleShape2D_we5hr")
 
 [node name="animation" type="AnimatedSprite2D" parent="Player"]
 scale = Vector2(0.5, 0.5)
@@ -18,3 +26,23 @@ sprite_frames = ExtResource("1_d735t")
 autoplay = "default"
 frame = 12
 frame_progress = 0.310704
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="Block" type="StaticBody2D" parent="."]
+position = Vector2(200, 0)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Block"]
+shape = SubResource("RectangleShape2D_we5hr")
+
+[node name="Cube" type="Sprite2D" parent="Block"]
+position = Vector2(-1, 0.5)
+scale = Vector2(3, 2.98438)
+texture = ExtResource("3_5jbjp")
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(0, 200)
+script = ExtResource("4_fxfjc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_otbnq")
