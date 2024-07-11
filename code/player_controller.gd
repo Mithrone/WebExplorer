@@ -55,10 +55,12 @@ func correct_position():
 		else:
 			position.y = position.y - abs(fmod(position.y, step_size))
 
+#add items to a list
 func add_items_to_list(item):
 	current_items.append(item)
 	print(current_items)
 
+#removes an item from the list
 func remove_items_to_list(item):
 	current_items.erase(item)
 	print(current_items)

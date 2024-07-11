@@ -11,10 +11,13 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var overlap = get_overlapping_bodies()
+	##TODO: Improve to be more general
+	#Adds item to player 
 	if (overlap.size() > 0 && !added):
 		print(overlap[0].add_items_to_list(self))
 		last = overlap[0]
 		added = true
+	#Removes item from player
 	elif (overlap.size() <= 0 && added):
 		if (last != null):
 			last.remove_items_to_list(self)
