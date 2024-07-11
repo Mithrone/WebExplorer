@@ -1,3 +1,20 @@
-[gd_scene format=3 uid="uid://drnpp3i0ol5nx"]
+[gd_scene load_steps=3 format=3 uid="uid://drnpp3i0ol5nx"]
+
+[ext_resource type="SpriteFrames" uid="uid://dtqnegnqnvm5f" path="res://animations/playerAnimation.tres" id="1_d735t"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ukopr"]
+radius = 88.0511
 
 [node name="Node2D" type="Node2D"]
+
+[node name="Player" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_ukopr")
+
+[node name="animation" type="AnimatedSprite2D" parent="Player"]
+scale = Vector2(0.5, 0.5)
+sprite_frames = ExtResource("1_d735t")
+autoplay = "default"
+frame = 12
+frame_progress = 0.310704

@@ -11,12 +11,17 @@ config_version=5
 [application]
 
 config/name="Web Explorer"
+run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [dotnet]
 
 project/assembly_name="Web Explorer"
+
+[physics]
+
+2d/default_gravity=0.0
 
 [rendering]
 
