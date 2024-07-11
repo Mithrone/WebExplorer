@@ -5,8 +5,11 @@ var input_delay = 200.0
 var last_input_time = -input_delay
 var step_size = 200.0
 
+var current_items = [];
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+
 	pass # Replace with function body.
 
 
@@ -51,3 +54,11 @@ func correct_position():
 			position.y = position.y - (abs(fmod(position.y, step_size)) - step_size)
 		else:
 			position.y = position.y - abs(fmod(position.y, step_size))
+
+func add_items_to_list(item):
+	current_items.append(item)
+	print(current_items)
+
+func remove_items_to_list(item):
+	current_items.erase(item)
+	print(current_items)

@@ -8,8 +8,8 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_we5hr"]
 size = Vector2(190, 190)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_otbnq"]
-size = Vector2(180, 180)
+[sub_resource type="CircleShape2D" id="CircleShape2D_dnpmt"]
+radius = 46.0
 
 [node name="Node2D" type="Node2D"]
 
@@ -40,9 +40,9 @@ position = Vector2(-1, 0.5)
 scale = Vector2(3, 2.98438)
 texture = ExtResource("3_5jbjp")
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Item" type="Area2D" parent="."]
 position = Vector2(0, 200)
 script = ExtResource("4_fxfjc")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-shape = SubResource("RectangleShape2D_otbnq")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Item"]
+shape = SubResource("CircleShape2D_dnpmt")
