@@ -40,9 +40,23 @@ position = Vector2(-1, 0.5)
 scale = Vector2(3, 2.98438)
 texture = ExtResource("3_5jbjp")
 
-[node name="Item" type="Area2D" parent="."]
+[node name="Item" type="Area2D" parent="." groups=["equipable"]]
 position = Vector2(0, 200)
 script = ExtResource("4_fxfjc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Item"]
 shape = SubResource("CircleShape2D_dnpmt")
+
+[node name="Cube2" type="Sprite2D" parent="Item"]
+texture = ExtResource("3_5jbjp")
+
+[node name="Item2" type="Area2D" parent="."]
+position = Vector2(192, 196)
+script = ExtResource("4_fxfjc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Item2"]
+shape = SubResource("CircleShape2D_dnpmt")
+
+[node name="Cube2" type="Sprite2D" parent="Item2"]
+self_modulate = Color(1, 0.0823529, 0.145098, 1)
+texture = ExtResource("3_5jbjp")

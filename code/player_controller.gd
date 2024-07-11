@@ -5,7 +5,8 @@ var input_delay = 200.0
 var last_input_time = -input_delay
 var step_size = 200.0
 
-var current_items = [];
+var current_items = []
+var equiped_items = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -29,6 +30,28 @@ func _process(_delta):
 		if (Input.is_action_pressed("player_1_down")):
 			_collide =  move_and_collide(Vector2(0, step_size))
 			last_input_time = Time.get_ticks_msec()
+
+		if(Input.is_action_pressed("player_1_action_1")):
+			var count = 0
+			for item in current_items:
+				if (count < 2):
+					if (item.is_in_group("equipable")):
+						if (item.get_parent() != self):
+							item.get_parent().remove_child(item)
+							add_child(item)
+							item.position = Vector2(0,0)
+							equiped_items.append(item)
+						else:
+							item.get_parent().remove_child(item)
+							get_parent().add_child(item)
+							item.position = position
+							equiped_items.erase(item)
+
+						count = count + 1
+						
+					last_input_time = Time.get_ticks_msec()
+					print(equiped_items)
+				pass
 
 		correct_position()
 
@@ -58,9 +81,9 @@ func correct_position():
 #add items to a list
 func add_items_to_list(item):
 	current_items.append(item)
-	print(current_items)
+	# print(current_items)
 
 #removes an item from the list
 func remove_items_to_list(item):
 	current_items.erase(item)
-	print(current_items)
+	# print(current_items)

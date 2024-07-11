@@ -14,7 +14,7 @@ func _process(delta):
 	##TODO: Improve to be more general
 	#Adds item to player 
 	if (overlap.size() > 0 && !added):
-		print(overlap[0].add_items_to_list(self))
+		overlap[0].add_items_to_list(self)
 		last = overlap[0]
 		added = true
 	#Removes item from player
