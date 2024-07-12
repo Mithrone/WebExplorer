@@ -18,6 +18,8 @@ func _process(_delta):
 	if (last_input_time + input_delay < Time.get_ticks_msec()):
 		var _collide
 		var direction = ""
+
+		#MOVEMENT###############################################
 		if (Input.is_action_pressed("player_1_left")):
 			_collide =  move_and_collide(Vector2(-step_size, 0))
 			reset_time(200)
@@ -35,6 +37,11 @@ func _process(_delta):
 			reset_time(200)
 			direction = "down"
 
+		#COLLISION AND MOVEMENT CORRECTION
+		correct_position()
+		collision(_collide, direction)
+
+		#EQUIP################################################################
 		if(Input.is_action_pressed("player_1_equip")):
 			for item in current_items:
 				if (item is Area2D):
@@ -43,12 +50,13 @@ func _process(_delta):
 							match group:
 								"equipable":
 									if (item.get_parent() != self && equiped_items.size() < 1):
+										#A3
 										# add
-										item.add_item(self)
+										item.equip_item(self)
 										equiped_items.append(item)
 									else:
 										# remove
-										item.remove_item(self)
+										item.unequip_item(self)
 										equiped_items.erase(item)
 								_:
 									print("Unknown item group")
@@ -56,11 +64,11 @@ func _process(_delta):
 						print("No item group")
 
 					reset_time(200)
-					
 				else:
 					print("NOT AREA2D")
 				pass
 
+		#ACTIONS##################################################################
 		if (equiped_items.size() > 0):
 			if (Input.is_action_pressed("player_1_action_1")):
 				var action_delay = equiped_items[0].do_action("action_1", "player")
@@ -68,11 +76,6 @@ func _process(_delta):
 			if (Input.is_action_pressed("player_1_action_2")):
 				var action_delay = equiped_items[0].do_action("action_2", "player")
 				reset_time(action_delay)
-
-		correct_position()
-
-		collision(_collide, direction)
-		
 	pass
 
 #Corrects the position to the nearest step. Currently it is every 200th pixel sideways and vertically
@@ -99,6 +102,7 @@ func correct_position():
 		else:
 			position.y = position.y - abs(fmod(position.y, step_size))
 
+#Handles collision with different nodes
 func collision(collider, _direction):
 	if (collider is KinematicCollision2D):
 		reset_time(500)
@@ -115,6 +119,7 @@ func collision(collider, _direction):
 
 #add items to a list
 func add_items_to_list(item):
+	#A2
 	if (item.is_in_group("destructable")):
 		#handle item
 		print("handle item destroy")
@@ -125,9 +130,10 @@ func add_items_to_list(item):
 	
 
 #removes an item from the list
-func remove_items_to_list(item):
+func remove_items_from_list(item):
 	current_items.erase(item)
 
+#resets player input timer
 func reset_time(delay):
 	last_input_time = Time.get_ticks_msec()
 	input_delay = delay

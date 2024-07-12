@@ -22,13 +22,14 @@ func _process(_delta):
 	##TODO: Improve to be more general
 	#Adds item to player 
 	if (VALID_ADD_ITEM_TO_PLAYER):
+		#A1
 		overlap[0].add_items_to_list(self)
 		last = overlap[0]
 		added = true
 	#Removes item from player
 	elif (VALID_REMOVE_ITEM_FROM_PLAYER):
 		if (last != null):
-			last.remove_items_to_list(self)
+			last.remove_items_from_list(self)
 		added = false
 	
 	if EQUIPED:
@@ -37,25 +38,27 @@ func _process(_delta):
 		item_sprite.modulate = Color(1, 1, 1, 1)
 	pass
 
-	
+#Destroys this item
 func destroy_item():
 	var parent = self.get_parent()
 	parent.remove_child(self)
 
-func add_item(parent):
+#Adds this item to a parent (eg. Player Equip)
+func equip_item(parent):
 	var item = self
 	item.get_parent().remove_child(item)
 	parent.add_child(item)
 	item.position = Vector2(0,0)
-	
-func remove_item(parent):
+
+#Removes this item from a parent (eg. Player Unequip)
+func unequip_item(parent):
 	var item = self
 	item.get_parent().remove_child(item)
 	parent.get_parent().add_child(item)
 	item.position = parent.position
 
+#Does an action. Returns next action delay time
 func do_action(action, _team):
-	# if (EQUIPED):
 		match action:
 			"action_1":
 				print("action 1")
