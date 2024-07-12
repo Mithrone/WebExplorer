@@ -10,7 +10,6 @@ var equiped_items = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-
 	pass # Replace with function body.
 
 
@@ -18,72 +17,117 @@ func _ready():
 func _process(_delta):
 	if (last_input_time + input_delay < Time.get_ticks_msec()):
 		var _collide
+		var direction = ""
 		if (Input.is_action_pressed("player_1_left")):
 			_collide =  move_and_collide(Vector2(-step_size, 0))
-			last_input_time = Time.get_ticks_msec()
+			reset_time(200)
+			direction = "left"
 		if (Input.is_action_pressed("player_1_right")):
 			_collide =  move_and_collide(Vector2(step_size, 0))
-			last_input_time = Time.get_ticks_msec()
+			reset_time(200)
+			direction = "right"
 		if (Input.is_action_pressed("player_1_up")):
 			_collide =  move_and_collide(Vector2(0, -step_size))
-			last_input_time = Time.get_ticks_msec()
+			reset_time(200)
+			direction = "up"
 		if (Input.is_action_pressed("player_1_down")):
 			_collide =  move_and_collide(Vector2(0, step_size))
-			last_input_time = Time.get_ticks_msec()
+			reset_time(200)
+			direction = "down"
 
-		if(Input.is_action_pressed("player_1_action_1")):
-			var count = 0
+		if(Input.is_action_pressed("player_1_equip")):
 			for item in current_items:
-				if (count < 2):
-					if (item.is_in_group("equipable")):
-						if (item.get_parent() != self):
-							item.get_parent().remove_child(item)
-							add_child(item)
-							item.position = Vector2(0,0)
-							equiped_items.append(item)
-						else:
-							item.get_parent().remove_child(item)
-							get_parent().add_child(item)
-							item.position = position
-							equiped_items.erase(item)
+				if (item is Area2D):
+					if (item.get_groups().size() > 0):
+						for group in item.get_groups():
+							match group:
+								"equipable":
+									if (item.get_parent() != self && equiped_items.size() < 1):
+										# add
+										item.add_item(self)
+										equiped_items.append(item)
+									else:
+										# remove
+										item.remove_item(self)
+										equiped_items.erase(item)
+								_:
+									print("Unknown item group")
+					else:
+						print("No item group")
 
-						count = count + 1
-						
-					last_input_time = Time.get_ticks_msec()
-					print(equiped_items)
+					reset_time(200)
+					
+				else:
+					print("NOT AREA2D")
 				pass
+
+		if (equiped_items.size() > 0):
+			if (Input.is_action_pressed("player_1_action_1")):
+				var action_delay = equiped_items[0].do_action("action_1", "player")
+				reset_time(action_delay)
+			if (Input.is_action_pressed("player_1_action_2")):
+				var action_delay = equiped_items[0].do_action("action_2", "player")
+				reset_time(action_delay)
 
 		correct_position()
 
-		if (_collide is KinematicCollision2D):
-			print(_collide.get_collider())
+		collision(_collide, direction)
 		
 	pass
 
 #Corrects the position to the nearest step. Currently it is every 200th pixel sideways and vertically
 func correct_position():
-	if (abs(fmod(position.x, step_size)) > (step_size / 2)):
-		position.x = position.x - (abs(fmod(position.x, step_size)) - step_size)
-	else:
-		position.x = position.x - abs(fmod(position.x, step_size))
+	if (fmod(position.x, step_size) < 0):
+		if (abs(fmod(position.x, step_size) + step_size) > (step_size / 2)):
+			position.x = position.x - (abs(fmod(position.x, step_size) + step_size) - step_size)
+		else:
+			position.x = position.x - abs(fmod(position.x, step_size) + step_size)
+	elif (fmod(position.x, step_size) > 0):
+		if (abs(fmod(position.x, step_size)) > (step_size / 2)):
+			position.x = position.x - (abs(fmod(position.x, step_size)) - step_size)
+		else:
+			position.x = position.x - abs(fmod(position.x, step_size))
 
 	if (fmod(position.y, step_size) < 0):
 		if (abs(fmod(position.y, step_size) + step_size) > (step_size / 2)):
-			position.y = position.y - (abs(fmod(position.y, step_size)) - step_size)
+			position.y = position.y - (abs(fmod(position.y, step_size) + step_size) - step_size)
 		else:
 			position.y = position.y - abs(fmod(position.y, step_size) + step_size)
-	else:
+	elif (fmod(position.y, step_size) > 0):
 		if (abs(fmod(position.y, step_size)) > (step_size / 2)):
 			position.y = position.y - (abs(fmod(position.y, step_size)) - step_size)
 		else:
 			position.y = position.y - abs(fmod(position.y, step_size))
 
+func collision(collider, _direction):
+	if (collider is KinematicCollision2D):
+		reset_time(500)
+		if (collider.get_collider().get_groups().size() > 0):
+			for group in collider.get_collider().get_groups():
+				match group:
+					"block":
+						print("block collision")
+					_:
+						print("Not applicable collision")
+		else:
+			print("No Group collision")
+
+
 #add items to a list
 func add_items_to_list(item):
-	current_items.append(item)
-	# print(current_items)
+	if (item.is_in_group("destructable")):
+		#handle item
+		print("handle item destroy")
+		#destroy
+		item.destroy_item()
+	else:
+		current_items.append(item)
+	
 
 #removes an item from the list
 func remove_items_to_list(item):
 	current_items.erase(item)
-	# print(current_items)
+
+func reset_time(delay):
+	last_input_time = Time.get_ticks_msec()
+	input_delay = delay

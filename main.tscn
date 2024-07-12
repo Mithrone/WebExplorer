@@ -1,19 +1,22 @@
-[gd_scene load_steps=7 format=3 uid="uid://drnpp3i0ol5nx"]
+[gd_scene load_steps=8 format=3 uid="uid://drnpp3i0ol5nx"]
 
 [ext_resource type="SpriteFrames" uid="uid://dtqnegnqnvm5f" path="res://animations/playerAnimation.tres" id="1_d735t"]
 [ext_resource type="Script" path="res://code/player_controller.gd" id="1_nki1m"]
 [ext_resource type="Texture2D" uid="uid://fsvdkwhsj1bf" path="res://sprites/Cube.png" id="3_5jbjp"]
-[ext_resource type="Script" path="res://code/test.gd" id="4_fxfjc"]
+[ext_resource type="Script" path="res://code/item_controller.gd" id="4_fxfjc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_we5hr"]
-size = Vector2(190, 190)
+size = Vector2(180, 180)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dnpmt"]
 radius = 46.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7fgp1"]
+size = Vector2(180, 180)
+
 [node name="Node2D" type="Node2D"]
 
-[node name="Player" type="AnimatableBody2D" parent="."]
+[node name="Player" type="AnimatableBody2D" parent="." groups=["player"]]
 sync_to_physics = false
 script = ExtResource("1_nki1m")
 
@@ -29,7 +32,7 @@ frame_progress = 0.310704
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 
-[node name="Block" type="StaticBody2D" parent="."]
+[node name="Block" type="StaticBody2D" parent="." groups=["block"]]
 position = Vector2(200, 0)
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Block"]
@@ -44,19 +47,39 @@ texture = ExtResource("3_5jbjp")
 position = Vector2(0, 200)
 script = ExtResource("4_fxfjc")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Item"]
-shape = SubResource("CircleShape2D_dnpmt")
-
 [node name="Cube2" type="Sprite2D" parent="Item"]
 texture = ExtResource("3_5jbjp")
 
-[node name="Item2" type="Area2D" parent="."]
-position = Vector2(192, 196)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Item"]
+shape = SubResource("CircleShape2D_dnpmt")
+
+[node name="Item3" type="Area2D" parent="." groups=["equipable"]]
+position = Vector2(2, 203)
 script = ExtResource("4_fxfjc")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Item2"]
+[node name="Cube2" type="Sprite2D" parent="Item3"]
+texture = ExtResource("3_5jbjp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Item3"]
 shape = SubResource("CircleShape2D_dnpmt")
+
+[node name="Item2" type="Area2D" parent="." groups=["destructable"]]
+position = Vector2(250, 225)
+script = ExtResource("4_fxfjc")
 
 [node name="Cube2" type="Sprite2D" parent="Item2"]
 self_modulate = Color(1, 0.0823529, 0.145098, 1)
 texture = ExtResource("3_5jbjp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Item2"]
+shape = SubResource("CircleShape2D_dnpmt")
+
+[node name="AnimatableBody2D" type="AnimatableBody2D" parent="."]
+position = Vector2(-400, 3)
+
+[node name="Cube2" type="Sprite2D" parent="AnimatableBody2D"]
+scale = Vector2(3, 3)
+texture = ExtResource("3_5jbjp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatableBody2D"]
+shape = SubResource("RectangleShape2D_7fgp1")
