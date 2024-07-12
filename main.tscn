@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://drnpp3i0ol5nx"]
+[gd_scene load_steps=9 format=3 uid="uid://drnpp3i0ol5nx"]
 
 [ext_resource type="SpriteFrames" uid="uid://dtqnegnqnvm5f" path="res://animations/playerAnimation.tres" id="1_d735t"]
-[ext_resource type="Script" path="res://code/player_controller.gd" id="1_nki1m"]
+[ext_resource type="Script" path="res://code/node_controller.gd" id="1_nki1m"]
+[ext_resource type="Script" path="res://code/player_input.gd" id="3_4uo68"]
 [ext_resource type="Texture2D" uid="uid://fsvdkwhsj1bf" path="res://sprites/Cube.png" id="3_5jbjp"]
 [ext_resource type="Script" path="res://code/item_controller.gd" id="4_fxfjc"]
 
@@ -30,7 +31,10 @@ autoplay = "default"
 frame = 12
 frame_progress = 0.310704
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
+[node name="player_input" type="Node2D" parent="Player"]
+script = ExtResource("3_4uo68")
+
+[node name="Camera2D" type="Camera2D" parent="Player/player_input"]
 
 [node name="Block" type="StaticBody2D" parent="." groups=["block"]]
 position = Vector2(200, 0)
@@ -76,6 +80,8 @@ shape = SubResource("CircleShape2D_dnpmt")
 
 [node name="AnimatableBody2D" type="AnimatableBody2D" parent="."]
 position = Vector2(-400, 3)
+sync_to_physics = false
+script = ExtResource("1_nki1m")
 
 [node name="Cube2" type="Sprite2D" parent="AnimatableBody2D"]
 scale = Vector2(3, 3)
@@ -83,3 +89,9 @@ texture = ExtResource("3_5jbjp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatableBody2D"]
 shape = SubResource("RectangleShape2D_7fgp1")
+
+[node name="blin_input" type="Node2D" parent="AnimatableBody2D"]
+
+[node name="player_input2" type="Node2D" parent="AnimatableBody2D"]
+position = Vector2(400, -3)
+script = ExtResource("3_4uo68")

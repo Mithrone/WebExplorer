@@ -1,12 +1,15 @@
 #Controlls all player actions
 extends AnimatableBody2D
 
-var input_delay = 200.0
-var last_input_time = -input_delay
+
 var step_size = 200.0
 
 var current_items = []
 var equiped_items = []
+
+var _collide
+
+var team = "player"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -15,67 +18,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	if (last_input_time + input_delay < Time.get_ticks_msec()):
-		var _collide
-		var direction = ""
-
-		#MOVEMENT###############################################
-		if (Input.is_action_pressed("player_1_left")):
-			_collide =  move_and_collide(Vector2(-step_size, 0))
-			reset_time(200)
-			direction = "left"
-		if (Input.is_action_pressed("player_1_right")):
-			_collide =  move_and_collide(Vector2(step_size, 0))
-			reset_time(200)
-			direction = "right"
-		if (Input.is_action_pressed("player_1_up")):
-			_collide =  move_and_collide(Vector2(0, -step_size))
-			reset_time(200)
-			direction = "up"
-		if (Input.is_action_pressed("player_1_down")):
-			_collide =  move_and_collide(Vector2(0, step_size))
-			reset_time(200)
-			direction = "down"
-
-		#COLLISION AND MOVEMENT CORRECTION
-		correct_position()
-		collision(_collide, direction)
-
-		#EQUIP################################################################
-		if(Input.is_action_pressed("player_1_equip")):
-			for item in current_items:
-				if (item is Area2D):
-					if (item.get_groups().size() > 0):
-						for group in item.get_groups():
-							match group:
-								"equipable":
-									if (item.get_parent() != self && equiped_items.size() < 1):
-										#A3
-										# add
-										item.equip_item(self)
-										equiped_items.append(item)
-									else:
-										# remove
-										item.unequip_item(self)
-										equiped_items.erase(item)
-								_:
-									print("Unknown item group")
-					else:
-						print("No item group")
-
-					reset_time(200)
-				else:
-					print("NOT AREA2D")
-				pass
-
 		#ACTIONS##################################################################
-		if (equiped_items.size() > 0):
-			if (Input.is_action_pressed("player_1_action_1")):
-				var action_delay = equiped_items[0].do_action("action_1", "player")
-				reset_time(action_delay)
-			if (Input.is_action_pressed("player_1_action_2")):
-				var action_delay = equiped_items[0].do_action("action_2", "player")
-				reset_time(action_delay)
+	
 	pass
 
 #Corrects the position to the nearest step. Currently it is every 200th pixel sideways and vertically
@@ -105,7 +49,6 @@ func correct_position():
 #Handles collision with different nodes
 func collision(collider, _direction):
 	if (collider is KinematicCollision2D):
-		reset_time(500)
 		if (collider.get_collider().get_groups().size() > 0):
 			for group in collider.get_collider().get_groups():
 				match group:
@@ -115,6 +58,7 @@ func collision(collider, _direction):
 						print("Not applicable collision")
 		else:
 			print("No Group collision")
+		return 500
 
 
 #add items to a list
@@ -133,7 +77,77 @@ func add_items_to_list(item):
 func remove_items_from_list(item):
 	current_items.erase(item)
 
-#resets player input timer
-func reset_time(delay):
-	last_input_time = Time.get_ticks_msec()
-	input_delay = delay
+
+
+func move(action):
+	var direction = ""
+	
+	#MOVEMENT###############################################
+	if (action == "left"):
+		_collide =  move_and_collide(Vector2(-step_size, 0))
+		direction = "left"
+		correct_position()
+		collision(_collide, direction)
+		return 200
+	if (action == "right"):
+		_collide =  move_and_collide(Vector2(step_size, 0))
+		direction = "right"
+		correct_position()
+		collision(_collide, direction)
+		return 200
+	if (action == "up"):
+		_collide =  move_and_collide(Vector2(0, -step_size))
+		direction = "up"
+		correct_position()
+		collision(_collide, direction)
+		return 200
+	if (action == "down"):
+		_collide =  move_and_collide(Vector2(0, step_size))
+		direction = "down"
+		correct_position()
+		collision(_collide, direction)
+		return 200
+
+	#COLLISION AND MOVEMENT CORRECTION
+	
+
+func equip(action):
+	if(action == "equip"):
+		print(current_items)
+		for item in current_items:
+			print(item)
+			if (item is Area2D):
+				if (item.get_groups().size() > 0):
+					for group in item.get_groups():
+						match group:
+							"equipable":
+								if (item.get_parent() != self && equiped_items.size() < 1):
+									# add
+									item.equip_item(self)
+									equiped_items.append(item)
+								else:
+									# remove
+									item.unequip_item(self)
+									equiped_items.erase(item)
+							_:
+								print("Unknown item group")
+				else:
+					print("No item group")
+				
+			else:
+				print("NOT AREA2D")
+				return null
+
+		return 200
+	else:
+		return null
+			
+
+func do_action(action):
+	if (equiped_items.size() > 0):
+		if (action == "action_1"):
+			var action_delay = equiped_items[0].do_action("action_1", team)
+			return action_delay
+		if (action == "action_2"):
+			var action_delay = equiped_items[0].do_action("action_2", team)
+			return action_delay

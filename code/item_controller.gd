@@ -65,4 +65,4 @@ func do_action(action, _team):
 				return 200
 			_:
 				print("invalid action")
-				return 100
+				return null
